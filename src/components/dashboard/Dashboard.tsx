@@ -1,13 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import MetricCard from './MetricCard';
 import AuditChart from './AuditChart';
 import RecentAudits from './RecentAudits';
+import SectorMetrics from './SectorMetrics';
+import AreaMetrics from './AreaMetrics';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, ClipboardCheck, TrendingUp, AlertTriangle, Target } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -90,47 +93,66 @@ const Dashboard: React.FC = () => {
           />
         </div>
 
-        {/* Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Monthly Performance */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Performance Mensal</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis domain={[0, 5]} />
-                  <Tooltip />
-                  <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+        {/* Tabs para diferentes visualizações */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+            <TabsTrigger value="sectors">Por Setor</TabsTrigger>
+            <TabsTrigger value="areas">Por Área</TabsTrigger>
+          </TabsList>
 
-          {/* 5S Categories Performance */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Performance por Categoria 5S</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={categoryData} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" domain={[0, 5]} />
-                  <YAxis dataKey="name" type="category" width={120} />
-                  <Tooltip />
-                  <Bar dataKey="score" fill="#10b981" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
+          <TabsContent value="overview" className="space-y-6">
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Monthly Performance */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Performance Mensal</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis domain={[0, 5]} />
+                      <Tooltip />
+                      <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
 
-        {/* Recent Audits */}
-        <RecentAudits />
+              {/* 5S Categories Performance */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Performance por Categoria 5S</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={categoryData} layout="horizontal">
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" domain={[0, 5]} />
+                      <YAxis dataKey="name" type="category" width={120} />
+                      <Tooltip />
+                      <Bar dataKey="score" fill="#10b981" radius={[0, 4, 4, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Audits */}
+            <RecentAudits />
+          </TabsContent>
+
+          <TabsContent value="sectors">
+            <SectorMetrics />
+          </TabsContent>
+
+          <TabsContent value="areas">
+            <AreaMetrics />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
