@@ -62,13 +62,13 @@ const RecentAudits: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge variant="secondary" className="bg-green-100 text-green-700">Completa</Badge>;
+        return <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">Completa</Badge>;
       case 'approved':
-        return <Badge variant="secondary" className="bg-blue-100 text-blue-700">Aprovada</Badge>;
+        return <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">Aprovada</Badge>;
       case 'draft':
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">Rascunho</Badge>;
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 text-xs">Rascunho</Badge>;
       default:
-        return <Badge variant="secondary">Desconhecido</Badge>;
+        return <Badge variant="secondary" className="text-xs">Desconhecido</Badge>;
     }
   };
 
@@ -82,43 +82,43 @@ const RecentAudits: React.FC = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Auditorias Recentes</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base md:text-lg">Auditorias Recentes</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {recentAudits.map((audit) => (
             <div
               key={audit.id}
-              className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 md:p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors space-y-2 sm:space-y-0"
             >
-              <div className="flex items-center space-x-4">
+              <div className="flex items-start space-x-3">
                 {getStatusIcon(audit.status)}
-                <div>
-                  <h4 className="font-medium text-gray-900">{audit.title}</h4>
-                  <div className="flex items-center space-x-3 text-sm text-gray-600 mt-1">
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-gray-900 text-sm md:text-base truncate">{audit.title}</h4>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 text-xs md:text-sm text-gray-600 mt-1 space-y-1 sm:space-y-0">
                     <span>Área: {audit.area}</span>
-                    <span>•</span>
+                    <span className="hidden sm:inline">•</span>
                     <span>Por: {audit.auditor}</span>
-                    <span>•</span>
+                    <span className="hidden sm:inline">•</span>
                     <span>{new Date(audit.date).toLocaleDateString('pt-BR')}</span>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <div className="text-right">
-                  <div className={`text-lg ${getScoreColor(audit.score)}`}>
+              <div className="flex items-center justify-between sm:justify-end sm:space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div className={`text-base md:text-lg ${getScoreColor(audit.score)}`}>
                     {audit.score > 0 ? `${audit.score}/5.0` : '--'}
                   </div>
                   {getStatusBadge(audit.status)}
                 </div>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
-                    <Eye className="w-4 h-4" />
+                <div className="flex space-x-1 md:space-x-2">
+                  <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                    <Eye className="w-3 h-3 md:w-4 md:h-4" />
                   </Button>
                   {audit.status === 'draft' && (
-                    <Button variant="outline" size="sm">
-                      <Edit className="w-4 h-4" />
+                    <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                      <Edit className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                   )}
                 </div>

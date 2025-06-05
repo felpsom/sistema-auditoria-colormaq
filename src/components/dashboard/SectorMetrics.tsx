@@ -36,19 +36,19 @@ const SectorMetrics: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Resumo por Setor */}
       <Card>
-        <CardHeader>
-          <CardTitle>Performance por Setor</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base md:text-lg">Performance por Setor</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4 mb-4 md:mb-6">
             {sectorData.map((sector) => (
-              <div key={sector.sector} className="p-4 border rounded-lg">
+              <div key={sector.sector} className="p-3 md:p-4 border rounded-lg">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-medium text-sm">{sector.sector}</h3>
-                  <Badge variant="outline" className={getScoreColor(sector.averageScore)}>
+                  <h3 className="font-medium text-sm md:text-base truncate">{sector.sector}</h3>
+                  <Badge variant="outline" className={`${getScoreColor(sector.averageScore)} text-xs`}>
                     {sector.averageScore.toFixed(1)}
                   </Badge>
                 </div>
@@ -64,11 +64,11 @@ const SectorMetrics: React.FC = () => {
           </div>
 
           {/* Gráfico de Performance por Setor */}
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={sectorData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="sector" />
-              <YAxis domain={[0, 5]} />
+              <XAxis dataKey="sector" tick={{ fontSize: 10 }} angle={-45} textAnchor="end" height={60} />
+              <YAxis domain={[0, 5]} tick={{ fontSize: 12 }} />
               <Tooltip />
               <Bar dataKey="averageScore" fill="#3b82f6" radius={[4, 4, 0, 0]} />
             </BarChart>

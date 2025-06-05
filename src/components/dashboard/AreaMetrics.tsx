@@ -39,35 +39,35 @@ const AreaMetrics: React.FC = () => {
   }));
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="space-y-4 md:space-y-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
         {/* Lista de Áreas */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Performance por Área</CardTitle>
+        <Card className="xl:order-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base md:text-lg">Performance por Área</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
               {areaData.map((area) => (
-                <div key={area.area} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                  <div className="flex items-center space-x-3">
+                <div key={area.area} className="flex items-center justify-between p-2 md:p-3 border rounded-lg hover:bg-gray-50">
+                  <div className="flex items-center space-x-2 md:space-x-3 flex-1 min-w-0">
                     <div 
-                      className="w-3 h-3 rounded-full" 
+                      className="w-3 h-3 rounded-full flex-shrink-0" 
                       style={{ backgroundColor: area.color }}
                     />
-                    <div>
-                      <div className="font-medium text-sm">{area.area}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium text-xs md:text-sm truncate">{area.area}</div>
                       <div className="text-xs text-gray-500">
                         {area.audits} auditorias
                         {area.criticalIssues > 0 && (
-                          <span className="ml-2 text-red-600">
-                            • {area.criticalIssues} questões críticas
+                          <span className="ml-1 md:ml-2 text-red-600">
+                            • {area.criticalIssues} críticas
                           </span>
                         )}
                       </div>
                     </div>
                   </div>
-                  <Badge variant="outline" className={getScoreColor(area.averageScore)}>
+                  <Badge variant="outline" className={`${getScoreColor(area.averageScore)} text-xs flex-shrink-0`}>
                     {area.averageScore.toFixed(1)}
                   </Badge>
                 </div>
@@ -77,28 +77,31 @@ const AreaMetrics: React.FC = () => {
         </Card>
 
         {/* Gráfico de Pizza - Distribuição de Auditorias */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribuição de Auditorias por Área</CardTitle>
+        <Card className="xl:order-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base md:text-lg">Distribuição de Auditorias</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  outerRadius={120}
+                  outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  labelLine={false}
+                  label={false}
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip />
+                <Legend 
+                  wrapperStyle={{ fontSize: '12px' }}
+                  iconSize={8}
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>

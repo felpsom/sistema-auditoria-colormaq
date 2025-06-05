@@ -41,30 +41,32 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50 p-3 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard Colormaq</h1>
-            <p className="text-gray-600 mt-1">
-              Bem-vindo, {user?.name} - {user?.company}
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard Colormaq</h1>
+            <p className="text-gray-600 mt-1 text-sm md:text-base">
+              Bem-vindo, {user?.name}
+              <span className="hidden sm:inline"> - {user?.company}</span>
             </p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
-            Nova Auditoria
+            <span className="hidden sm:inline">Nova Auditoria</span>
+            <span className="sm:hidden">Nova</span>
           </Button>
         </div>
 
         {/* Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           <MetricCard
             title="Total de Auditorias"
             value={metrics.totalAudits}
             change={15}
             changeLabel="este mês"
-            icon={<ClipboardCheck className="w-5 h-5" />}
+            icon={<ClipboardCheck className="w-4 h-4 md:w-5 md:h-5" />}
             color="blue"
           />
           <MetricCard
@@ -72,7 +74,7 @@ const Dashboard: React.FC = () => {
             value={`${metrics.averageScore}/5.0`}
             change={metrics.improvementTrend}
             changeLabel="de melhoria"
-            icon={<Target className="w-5 h-5" />}
+            icon={<Target className="w-4 h-4 md:w-5 md:h-5" />}
             color="green"
           />
           <MetricCard
@@ -80,7 +82,7 @@ const Dashboard: React.FC = () => {
             value="+12.5%"
             change={8.3}
             changeLabel="vs trimestre anterior"
-            icon={<TrendingUp className="w-5 h-5" />}
+            icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5" />}
             color="yellow"
           />
           <MetricCard
@@ -88,33 +90,42 @@ const Dashboard: React.FC = () => {
             value={metrics.criticalIssues}
             change={-25}
             changeLabel="resolvidas este mês"
-            icon={<AlertTriangle className="w-5 h-5" />}
+            icon={<AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />}
             color="red"
           />
         </div>
 
         {/* Tabs para diferentes visualizações */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-            <TabsTrigger value="sectors">Por Setor</TabsTrigger>
-            <TabsTrigger value="areas">Por Área</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-4 md:space-y-6">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="overview" className="text-xs md:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Visão Geral</span>
+              <span className="sm:hidden">Geral</span>
+            </TabsTrigger>
+            <TabsTrigger value="sectors" className="text-xs md:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Por Setor</span>
+              <span className="sm:hidden">Setores</span>
+            </TabsTrigger>
+            <TabsTrigger value="areas" className="text-xs md:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Por Área</span>
+              <span className="sm:hidden">Áreas</span>
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-4 md:space-y-6">
             {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
               {/* Monthly Performance */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Performance Mensal</CardTitle>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base md:text-lg">Performance Mensal</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis domain={[0, 5]} />
+                      <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                      <YAxis domain={[0, 5]} tick={{ fontSize: 12 }} />
                       <Tooltip />
                       <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -124,15 +135,15 @@ const Dashboard: React.FC = () => {
 
               {/* 5S Categories Performance */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Performance por Categoria 5S</CardTitle>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base md:text-lg">Performance por Categoria 5S</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={categoryData} layout="horizontal">
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" domain={[0, 5]} />
-                      <YAxis dataKey="name" type="category" width={120} />
+                      <XAxis type="number" domain={[0, 5]} tick={{ fontSize: 12 }} />
+                      <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 10 }} />
                       <Tooltip />
                       <Bar dataKey="score" fill="#10b981" radius={[0, 4, 4, 0]} />
                     </BarChart>

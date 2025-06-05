@@ -23,19 +23,29 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-full">
-      <div className="p-6">
-        <nav className="space-y-2">
+    <div className="w-full bg-white border-r border-gray-200 h-full">
+      <div className="p-4 md:p-6">
+        {/* Mobile Header */}
+        <div className="md:hidden mb-6 pb-4 border-b">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">CM</span>
+            </div>
+            <h2 className="font-bold text-gray-900 text-sm">Sistema Colormaq</h2>
+          </div>
+        </div>
+
+        <nav className="space-y-1 md:space-y-2">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`nav-link ${isActive ? 'active' : ''}`}
+                className={`nav-link ${isActive ? 'active' : ''} text-sm md:text-base`}
               >
-                <item.icon className="w-5 h-5" />
-                <span className="ml-3">{item.name}</span>
+                <item.icon className="w-4 h-4 md:w-5 md:h-5" />
+                <span className="ml-2 md:ml-3">{item.name}</span>
               </Link>
             );
           })}
