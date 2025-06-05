@@ -29,19 +29,19 @@ const AuditForm: React.FC = () => {
     }));
   };
 
-  const calculateCategoryScore = (category: string) => {
+  const calculateCategoryScore = (category: string): string => {
     const categoryQuestions = AUDIT_QUESTIONS.filter(q => q.category === category);
     const categoryResponses = categoryQuestions.filter(q => responses[q.id]);
     
-    if (categoryResponses.length === 0) return 0;
+    if (categoryResponses.length === 0) return '0.0';
     
     const total = categoryResponses.reduce((sum, q) => sum + responses[q.id].score, 0);
     return (total / categoryResponses.length).toFixed(1);
   };
 
-  const getTotalScore = () => {
+  const getTotalScore = (): string => {
     const answeredQuestions = Object.keys(responses);
-    if (answeredQuestions.length === 0) return 0;
+    if (answeredQuestions.length === 0) return '0.0';
     
     const total = answeredQuestions.reduce((sum, qId) => sum + responses[qId].score, 0);
     return (total / answeredQuestions.length).toFixed(1);
@@ -129,11 +129,12 @@ const AuditForm: React.FC = () => {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
               {categories.map(category => {
-                const score = parseFloat(calculateCategoryScore(category));
+                const scoreString = calculateCategoryScore(category);
+                const score = parseFloat(scoreString);
                 return (
                   <div key={category} className={`p-3 rounded-lg border-2 text-center ${getScoreColor(score)}`}>
                     <div className="text-xs font-medium mb-1">{category}</div>
-                    <div className="text-lg font-bold">{score}/5.0</div>
+                    <div className="text-lg font-bold">{scoreString}/5.0</div>
                   </div>
                 );
               })}
@@ -146,45 +147,49 @@ const AuditForm: React.FC = () => {
         </Card>
 
         {/* Questions by Category */}
-        {categories.map(category => (
-          <Card key={category} className="audit-form">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                {categoryNames[category as keyof typeof categoryNames]}
-                <Badge variant="outline" className={getScoreColor(parseFloat(calculateCategoryScore(category)))}>
-                  {calculateCategoryScore(category)}/5.0
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {AUDIT_QUESTIONS.filter(q => q.category === category).map(question => (
-                <div key={question.id} className="space-y-3">
-                  <Label className="text-base font-medium">{question.question}</Label>
-                  <div className="flex space-x-2">
-                    {[0, 1, 2, 3, 4, 5].map(score => (
-                      <Button
-                        key={score}
-                        variant={responses[question.id]?.score === score ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => handleResponseChange(question.id, score, responses[question.id]?.comments)}
-                        className={`w-12 h-10 ${responses[question.id]?.score === score ? 'bg-blue-600 text-white' : ''}`}
-                      >
-                        {score}
-                      </Button>
-                    ))}
+        {categories.map(category => {
+          const scoreString = calculateCategoryScore(category);
+          const score = parseFloat(scoreString);
+          return (
+            <Card key={category} className="audit-form">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  {categoryNames[category as keyof typeof categoryNames]}
+                  <Badge variant="outline" className={getScoreColor(score)}>
+                    {scoreString}/5.0
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {AUDIT_QUESTIONS.filter(q => q.category === category).map(question => (
+                  <div key={question.id} className="space-y-3">
+                    <Label className="text-base font-medium">{question.question}</Label>
+                    <div className="flex space-x-2">
+                      {[0, 1, 2, 3, 4, 5].map(score => (
+                        <Button
+                          key={score}
+                          variant={responses[question.id]?.score === score ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleResponseChange(question.id, score, responses[question.id]?.comments)}
+                          className={`w-12 h-10 ${responses[question.id]?.score === score ? 'bg-blue-600 text-white' : ''}`}
+                        >
+                          {score}
+                        </Button>
+                      ))}
+                    </div>
+                    <Textarea
+                      placeholder="Observações (opcional)"
+                      value={responses[question.id]?.comments || ''}
+                      onChange={(e) => handleResponseChange(question.id, responses[question.id]?.score || 0, e.target.value)}
+                      className="text-sm"
+                      rows={2}
+                    />
                   </div>
-                  <Textarea
-                    placeholder="Observações (opcional)"
-                    value={responses[question.id]?.comments || ''}
-                    onChange={(e) => handleResponseChange(question.id, responses[question.id]?.score || 0, e.target.value)}
-                    className="text-sm"
-                    rows={2}
-                  />
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        ))}
+                ))}
+              </CardContent>
+            </Card>
+          );
+        })}
 
         {/* General Observations */}
         <Card className="audit-form">
