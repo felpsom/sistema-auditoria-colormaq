@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -7,13 +6,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { LogOut, User, Settings, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import Sidebar from './Sidebar';
-
 const Navbar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const {
+    user,
+    logout
+  } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  return (
-    <nav className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
+  return <nav className="border-b border-gray-200 px-4 md:px-6 py-4 bg-sky-800">
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2 md:space-x-4">
           {/* Mobile Menu Button */}
@@ -29,8 +28,8 @@ const Navbar: React.FC = () => {
           </Sheet>
 
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs md:text-sm">CM</span>
+            <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center bg-transparent">
+              <span className="text-white text-xs md:text-sm font-bold">CM</span>
             </div>
             <h1 className="text-sm md:text-xl font-bold text-gray-900 truncate">
               <span className="hidden sm:inline">Sistema Colormaq de Produção</span>
@@ -75,8 +74,6 @@ const Navbar: React.FC = () => {
           </DropdownMenu>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
-
 export default Navbar;
