@@ -15,9 +15,9 @@ const Navbar: React.FC = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">5S</span>
+              <span className="text-white font-bold text-sm">CM</span>
             </div>
-            <h1 className="text-xl font-bold text-gray-900">Sistema de Auditoria 5S</h1>
+            <h1 className="text-xl font-bold text-gray-900">Sistema Colormaq de Produção</h1>
           </div>
         </div>
         
