@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
             <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center bg-transparent">
               <span className="text-white text-xs md:text-sm font-bold">CM</span>
             </div>
-            <h1 className="text-sm md:text-xl font-bold text-gray-900 truncate">
+            <h1 className="text-sm truncate text-white font-bold text-left md:text-xl">
               <span className="hidden sm:inline">Sistema Colormaq de Produção</span>
               <span className="sm:hidden">Colormaq</span>
             </h1>
