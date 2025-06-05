@@ -1,24 +1,26 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Settings, Menu } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { LogOut, User, Settings, Menu, Shield } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
+
 const Navbar: React.FC = () => {
-  const {
-    user,
-    logout
-  } = useAuth();
+  const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  return <nav className="border-b border-gray-200 px-4 md:px-6 py-4 bg-sky-800">
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 px-4 md:px-6 py-4 bg-sky-800">
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2 md:space-x-4">
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="sm" className="p-2">
+              <Button variant="ghost" size="sm" className="p-2 text-white hover:bg-sky-700">
                 <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
@@ -39,14 +41,14 @@ const Navbar: React.FC = () => {
         </div>
         
         <div className="flex items-center space-x-2 md:space-x-4">
-          <span className="text-xs md:text-sm text-gray-600 hidden sm:block truncate max-w-24 md:max-w-none">
+          <span className="text-xs md:text-sm text-gray-200 hidden sm:block truncate max-w-24 md:max-w-none">
             {user?.company}
           </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-sky-700">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs">{user?.name?.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-xs bg-white text-sky-800">{user?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -58,14 +60,28 @@ const Navbar: React.FC = () => {
                   <p className="text-xs text-muted-foreground md:hidden">{user?.company}</p>
                 </div>
               </div>
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                Perfil
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/settings" className="flex items-center">
+                  <User className="mr-2 h-4 w-4" />
+                  Perfil
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Configurações
+              <DropdownMenuItem asChild>
+                <Link to="/settings" className="flex items-center">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Configurações
+                </Link>
               </DropdownMenuItem>
+              {user?.role === 'admin' && (
+                <DropdownMenuItem asChild>
+                  <Link to="/settings/system" className="flex items-center">
+                    <Shield className="mr-2 h-4 w-4" />
+                    Configurações do Sistema
+                  </Link>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
@@ -74,6 +90,8 @@ const Navbar: React.FC = () => {
           </DropdownMenu>
         </div>
       </div>
-    </nav>;
+    </nav>
+  );
 };
+
 export default Navbar;

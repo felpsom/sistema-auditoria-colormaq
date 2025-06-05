@@ -8,6 +8,8 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import AuditPage from "./pages/AuditPage";
+import UserSettingsPage from "./pages/UserSettingsPage";
+import SystemSettingsPage from "./pages/SystemSettingsPage";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
