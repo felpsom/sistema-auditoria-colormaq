@@ -10,9 +10,10 @@ import { LogIn } from 'lucide-react';
 
 interface LoginFormProps {
   onToggleMode: () => void;
+  onForgotPassword: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onForgotPassword }) => {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +44,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
           <LogIn className="w-8 h-8 text-white" />
         </div>
         <CardTitle className="text-2xl font-bold">Entrar no Sistema</CardTitle>
-        <p className="text-gray-600">Sistema de Auditoria 5S</p>
+        <p className="text-gray-600">Sistema Colormaq de Produção</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -78,6 +79,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
             {isLoading ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
+        <div className="mt-4 text-center">
+          <button
+            onClick={onForgotPassword}
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Esqueci minha senha
+          </button>
+        </div>
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Não tem uma conta?{' '}
