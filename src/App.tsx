@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AuditProvider } from "@/contexts/AuditContext";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import AuditPage from "./pages/AuditPage";
@@ -24,17 +25,19 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="flex pt-16">
-        <Sidebar />
-        <main className="flex-1 min-h-[calc(100vh-4rem)] overflow-x-auto">
-          <div className="p-4 md:p-6">
-            {children}
-          </div>
-        </main>
+    <AuditProvider>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="flex pt-16">
+          <Sidebar />
+          <main className="flex-1 min-h-[calc(100vh-4rem)] overflow-x-auto">
+            <div className="p-4 md:p-6">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </AuditProvider>
   );
 };
 

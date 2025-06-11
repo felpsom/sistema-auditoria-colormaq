@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAudit } from '@/contexts/AuditContext';
 import MetricCard from './MetricCard';
-import AuditChart from './AuditChart';
 import RecentAudits from './RecentAudits';
 import SectorMetrics from './SectorMetrics';
 import AreaMetrics from './AreaMetrics';
@@ -11,17 +11,51 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, ClipboardCheck, TrendingUp, AlertTriangle, Target } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Link } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const { audits, getUserAudits } = useAudit();
 
-  // Mock data - in real app this would come from API
-  const metrics = {
-    totalAudits: 156,
-    averageScore: 4.2,
-    improvementTrend: 12.5,
-    criticalIssues: 3
-  };
+  // Get user's audits
+  const userAudits = getUserAudits();
+  
+  // Calculate real metrics from user's audits
+  const totalAudits = userAudits.length;
+  const completedAudits = userAudits.filter(audit => audit.status === 'completed');
+  const averageScore = completedAudits.length > 0 
+    ? (completedAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / completedAudits.length / 20) // Convert to 5.0 scale
+    : 0;
+  
+  // Calculate critical issues (audits with score below 60%)
+  const criticalIssues = completedAudits.filter(audit => audit.percentageScore < 60).length;
+  
+  // Calculate improvement trend (compare last month vs previous month)
+  const now = new Date();
+  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
+  const previousMonth = new Date(now.getFullYear(), now.getMonth() - 2);
+  
+  const lastMonthAudits = completedAudits.filter(audit => {
+    const auditDate = new Date(audit.date);
+    return auditDate >= lastMonth && auditDate <= now;
+  });
+  
+  const previousMonthAudits = completedAudits.filter(audit => {
+    const auditDate = new Date(audit.date);
+    return auditDate >= previousMonth && auditDate < lastMonth;
+  });
+  
+  const lastMonthAvg = lastMonthAudits.length > 0 
+    ? lastMonthAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / lastMonthAudits.length
+    : 0;
+  
+  const previousMonthAvg = previousMonthAudits.length > 0 
+    ? previousMonthAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / previousMonthAudits.length
+    : 0;
+  
+  const improvementTrend = previousMonthAvg > 0 
+    ? ((lastMonthAvg - previousMonthAvg) / previousMonthAvg) * 100
+    : 0;
 
   const categoryData = [
     { name: '1S - Classificar', score: 4.5, color: '#3b82f6' },
@@ -32,61 +66,67 @@ const Dashboard: React.FC = () => {
   ];
 
   const monthlyData = [
-    { month: 'Jan', score: 3.8, audits: 12 },
+    { month: 'Jan', score: 3.8, audits: lastMonthAudits.length },
     { month: 'Fev', score: 4.0, audits: 15 },
     { month: 'Mar', score: 4.1, audits: 18 },
     { month: 'Abr', score: 4.2, audits: 20 },
     { month: 'Mai', score: 4.2, audits: 22 },
-    { month: 'Jun', score: 4.4, audits: 25 }
+    { month: 'Jun', score: averageScore, audits: totalAudits }
   ];
+
+  // Generate company name using first name
+  const firstName = user?.name.split(' ')[0] || 'Usuário';
+  const companyName = user?.company || `${firstName} Industrial`;
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-4 md:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">Dashboard Colormaq</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">Dashboard {companyName}</h1>
           <p className="text-gray-600 mt-1 text-sm md:text-base truncate">
             Bem-vindo, {user?.name}
-            <span className="hidden sm:inline"> - {user?.company}</span>
+            <span className="hidden sm:inline"> - {companyName}</span>
           </p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto flex-shrink-0">
-          <Plus className="w-4 h-4 mr-2" />
-          <span className="hidden sm:inline">Nova Auditoria</span>
-          <span className="sm:hidden">Nova</span>
-        </Button>
+        <Link to="/audit/new">
+          <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto flex-shrink-0">
+            <Plus className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Nova Auditoria</span>
+            <span className="sm:hidden">Nova</span>
+          </Button>
+        </Link>
       </div>
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <MetricCard
           title="Total de Auditorias"
-          value={metrics.totalAudits}
-          change={15}
+          value={totalAudits}
+          change={lastMonthAudits.length}
           changeLabel="este mês"
           icon={<ClipboardCheck className="w-4 h-4 md:w-5 md:h-5" />}
           color="blue"
         />
         <MetricCard
           title="Pontuação Média"
-          value={`${metrics.averageScore}/5.0`}
-          change={metrics.improvementTrend}
+          value={`${averageScore.toFixed(1)}/5.0`}
+          change={improvementTrend}
           changeLabel="de melhoria"
           icon={<Target className="w-4 h-4 md:w-5 md:h-5" />}
           color="green"
         />
         <MetricCard
           title="Tendência"
-          value="+12.5%"
-          change={8.3}
-          changeLabel="vs trimestre anterior"
+          value={`${improvementTrend >= 0 ? '+' : ''}${improvementTrend.toFixed(1)}%`}
+          change={improvementTrend}
+          changeLabel="vs mês anterior"
           icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5" />}
           color="yellow"
         />
         <MetricCard
           title="Questões Críticas"
-          value={metrics.criticalIssues}
+          value={criticalIssues}
           change={-25}
           changeLabel="resolvidas este mês"
           icon={<AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />}
