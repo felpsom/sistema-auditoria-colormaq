@@ -29,11 +29,11 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className={`hidden md:flex flex-col bg-white border-r border-gray-200 transition-all duration-300 ${
+      <div className={`hidden md:flex flex-col bg-white border-r border-gray-200 transition-all duration-300 min-h-[calc(100vh-4rem)] ${
         isCollapsed ? 'w-16' : 'w-64'
       }`}>
         {/* Toggle Button */}
-        <div className="flex justify-end p-2">
+        <div className="flex justify-end p-2 border-b border-gray-100">
           <Button
             variant="ghost"
             size="sm"
@@ -46,7 +46,7 @@ const Sidebar: React.FC = () => {
 
         {/* Logo/Header */}
         {!isCollapsed && (
-          <div className="px-4 pb-4">
+          <div className="px-4 py-4 border-b border-gray-100">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">CM</span>
@@ -57,14 +57,14 @@ const Sidebar: React.FC = () => {
         )}
 
         {/* Navigation */}
-        <nav className="flex-1 px-2 space-y-1">
+        <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`group flex items-center px-2 py-3 text-sm font-medium rounded-md transition-colors ${
                   isActive
                     ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
@@ -72,7 +72,7 @@ const Sidebar: React.FC = () => {
                 title={isCollapsed ? item.name : ''}
               >
                 <item.icon className={`flex-shrink-0 ${isCollapsed ? 'h-5 w-5' : 'h-5 w-5 mr-3'}`} />
-                {!isCollapsed && <span>{item.name}</span>}
+                {!isCollapsed && <span className="truncate">{item.name}</span>}
               </Link>
             );
           })}

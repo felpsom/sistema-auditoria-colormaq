@@ -41,87 +41,87 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-3 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard Colormaq</h1>
-            <p className="text-gray-600 mt-1 text-sm md:text-base">
-              Bem-vindo, {user?.name}
-              <span className="hidden sm:inline"> - {user?.company}</span>
-            </p>
-          </div>
-          <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
-            <Plus className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Nova Auditoria</span>
-            <span className="sm:hidden">Nova</span>
-          </Button>
+    <div className="w-full max-w-7xl mx-auto space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">Dashboard Colormaq</h1>
+          <p className="text-gray-600 mt-1 text-sm md:text-base truncate">
+            Bem-vindo, {user?.name}
+            <span className="hidden sm:inline"> - {user?.company}</span>
+          </p>
         </div>
+        <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto flex-shrink-0">
+          <Plus className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Nova Auditoria</span>
+          <span className="sm:hidden">Nova</span>
+        </Button>
+      </div>
 
-        {/* Metrics Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-          <MetricCard
-            title="Total de Auditorias"
-            value={metrics.totalAudits}
-            change={15}
-            changeLabel="este mês"
-            icon={<ClipboardCheck className="w-4 h-4 md:w-5 md:h-5" />}
-            color="blue"
-          />
-          <MetricCard
-            title="Pontuação Média"
-            value={`${metrics.averageScore}/5.0`}
-            change={metrics.improvementTrend}
-            changeLabel="de melhoria"
-            icon={<Target className="w-4 h-4 md:w-5 md:h-5" />}
-            color="green"
-          />
-          <MetricCard
-            title="Tendência"
-            value="+12.5%"
-            change={8.3}
-            changeLabel="vs trimestre anterior"
-            icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5" />}
-            color="yellow"
-          />
-          <MetricCard
-            title="Questões Críticas"
-            value={metrics.criticalIssues}
-            change={-25}
-            changeLabel="resolvidas este mês"
-            icon={<AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />}
-            color="red"
-          />
-        </div>
+      {/* Metrics Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+        <MetricCard
+          title="Total de Auditorias"
+          value={metrics.totalAudits}
+          change={15}
+          changeLabel="este mês"
+          icon={<ClipboardCheck className="w-4 h-4 md:w-5 md:h-5" />}
+          color="blue"
+        />
+        <MetricCard
+          title="Pontuação Média"
+          value={`${metrics.averageScore}/5.0`}
+          change={metrics.improvementTrend}
+          changeLabel="de melhoria"
+          icon={<Target className="w-4 h-4 md:w-5 md:h-5" />}
+          color="green"
+        />
+        <MetricCard
+          title="Tendência"
+          value="+12.5%"
+          change={8.3}
+          changeLabel="vs trimestre anterior"
+          icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5" />}
+          color="yellow"
+        />
+        <MetricCard
+          title="Questões Críticas"
+          value={metrics.criticalIssues}
+          change={-25}
+          changeLabel="resolvidas este mês"
+          icon={<AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />}
+          color="red"
+        />
+      </div>
 
-        {/* Tabs para diferentes visualizações */}
-        <Tabs defaultValue="overview" className="space-y-4 md:space-y-6">
-          <TabsList className="grid w-full grid-cols-3 h-auto">
-            <TabsTrigger value="overview" className="text-xs md:text-sm px-2 py-2">
-              <span className="hidden sm:inline">Visão Geral</span>
-              <span className="sm:hidden">Geral</span>
-            </TabsTrigger>
-            <TabsTrigger value="sectors" className="text-xs md:text-sm px-2 py-2">
-              <span className="hidden sm:inline">Por Setor</span>
-              <span className="sm:hidden">Setores</span>
-            </TabsTrigger>
-            <TabsTrigger value="areas" className="text-xs md:text-sm px-2 py-2">
-              <span className="hidden sm:inline">Por Área</span>
-              <span className="sm:hidden">Áreas</span>
-            </TabsTrigger>
-          </TabsList>
+      {/* Tabs para diferentes visualizações */}
+      <Tabs defaultValue="overview" className="space-y-4 md:space-y-6">
+        <TabsList className="grid w-full grid-cols-3 h-auto">
+          <TabsTrigger value="overview" className="text-xs md:text-sm px-2 py-2">
+            <span className="hidden sm:inline">Visão Geral</span>
+            <span className="sm:hidden">Geral</span>
+          </TabsTrigger>
+          <TabsTrigger value="sectors" className="text-xs md:text-sm px-2 py-2">
+            <span className="hidden sm:inline">Por Setor</span>
+            <span className="sm:hidden">Setores</span>
+          </TabsTrigger>
+          <TabsTrigger value="areas" className="text-xs md:text-sm px-2 py-2">
+            <span className="hidden sm:inline">Por Área</span>
+            <span className="sm:hidden">Áreas</span>
+          </TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="overview" className="space-y-4 md:space-y-6">
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-              {/* Monthly Performance */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base md:text-lg">Performance Mensal</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={250}>
+        <TabsContent value="overview" className="space-y-4 md:space-y-6">
+          {/* Charts Row */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
+            {/* Monthly Performance */}
+            <Card className="w-full">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base md:text-lg">Performance Mensal</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="w-full h-64">
+                  <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" tick={{ fontSize: 12 }} />
@@ -130,16 +130,18 @@ const Dashboard: React.FC = () => {
                       <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
+                </div>
+              </CardContent>
+            </Card>
 
-              {/* 5S Categories Performance */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base md:text-lg">Performance por Categoria 5S</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={250}>
+            {/* 5S Categories Performance */}
+            <Card className="w-full">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base md:text-lg">Performance por Categoria 5S</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="w-full h-64">
+                  <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={categoryData} layout="horizontal">
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" domain={[0, 5]} tick={{ fontSize: 12 }} />
@@ -148,23 +150,23 @@ const Dashboard: React.FC = () => {
                       <Bar dataKey="score" fill="#10b981" radius={[0, 4, 4, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-            {/* Recent Audits */}
-            <RecentAudits />
-          </TabsContent>
+          {/* Recent Audits */}
+          <RecentAudits />
+        </TabsContent>
 
-          <TabsContent value="sectors">
-            <SectorMetrics />
-          </TabsContent>
+        <TabsContent value="sectors">
+          <SectorMetrics />
+        </TabsContent>
 
-          <TabsContent value="areas">
-            <AreaMetrics />
-          </TabsContent>
-        </Tabs>
-      </div>
+        <TabsContent value="areas">
+          <AreaMetrics />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

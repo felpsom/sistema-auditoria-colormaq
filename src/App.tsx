@@ -26,10 +26,12 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="flex">
+      <div className="flex pt-16">
         <Sidebar />
-        <main className="flex-1">
-          {children}
+        <main className="flex-1 min-h-[calc(100vh-4rem)] overflow-x-auto">
+          <div className="p-4 md:p-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>
@@ -47,10 +49,11 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/audit/new" element={<AuditPage />} />
-              <Route path="/audits" element={<div className="p-6">Lista de Auditorias em desenvolvimento</div>} />
-              <Route path="/reports" element={<div className="p-6">Relatórios em desenvolvimento</div>} />
-              <Route path="/users" element={<div className="p-6">Usuários em desenvolvimento</div>} />
-              <Route path="/settings" element={<div className="p-6">Configurações em desenvolvimento</div>} />
+              <Route path="/audits" element={<div>Lista de Auditorias em desenvolvimento</div>} />
+              <Route path="/reports" element={<div>Relatórios em desenvolvimento</div>} />
+              <Route path="/users" element={<div>Usuários em desenvolvimento</div>} />
+              <Route path="/settings" element={<UserSettingsPage />} />
+              <Route path="/settings/system" element={<SystemSettingsPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AppLayout>
