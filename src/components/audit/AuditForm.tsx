@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,12 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAudit } from '@/contexts/AuditContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { AUDIT_QUESTIONS, AuditResponse } from '@/types/audit';
 import { Save, Send, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AuditForm: React.FC = () => {
   const { createAudit, updateAudit } = useAudit();
+  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -101,6 +102,15 @@ const AuditForm: React.FC = () => {
       return;
     }
 
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Usuário não autenticado",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       const responsesArray = Object.values(responses);
       const totalScore = getTotalScore();
@@ -110,6 +120,8 @@ const AuditForm: React.FC = () => {
       const auditData = {
         title: formData.title,
         area: formData.area,
+        auditorId: user.id,
+        auditorName: user.name,
         date: new Date().toISOString().split('T')[0],
         status: 'draft' as const,
         responses: responsesArray,
@@ -154,6 +166,15 @@ const AuditForm: React.FC = () => {
       return;
     }
 
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Usuário não autenticado",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const responsesArray = Object.values(responses);
@@ -164,6 +185,8 @@ const AuditForm: React.FC = () => {
       const auditData = {
         title: formData.title,
         area: formData.area,
+        auditorId: user.id,
+        auditorName: user.name,
         date: new Date().toISOString().split('T')[0],
         status: 'completed' as const,
         responses: responsesArray,
