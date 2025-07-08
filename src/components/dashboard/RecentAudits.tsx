@@ -4,47 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye, Edit, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { useAudit } from '@/contexts/AuditContext';
+import { Link } from 'react-router-dom';
 
 const RecentAudits: React.FC = () => {
-  // Mock data - in real app this would come from API
-  const recentAudits = [
-    {
-      id: '1',
-      title: 'Auditoria Linha Produção A',
-      area: 'Produção',
-      date: '2024-06-05',
-      score: 4.2,
-      status: 'completed',
-      auditor: 'Maria Santos'
-    },
-    {
-      id: '2',
-      title: 'Auditoria Estoque',
-      area: 'Logística',
-      date: '2024-06-04',
-      score: 3.8,
-      status: 'completed',
-      auditor: 'João Silva'
-    },
-    {
-      id: '3',
-      title: 'Auditoria Manutenção',
-      area: 'Manutenção',
-      date: '2024-06-03',
-      score: 4.5,
-      status: 'approved',
-      auditor: 'Ana Costa'
-    },
-    {
-      id: '4',
-      title: 'Auditoria Qualidade',
-      area: 'Qualidade',
-      date: '2024-06-02',
-      score: 0,
-      status: 'draft',
-      auditor: 'Carlos Lima'
-    }
-  ];
+  const { getUserAudits } = useAudit();
+  
+  // Get user's recent audits (last 4)
+  const recentAudits = getUserAudits()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 4);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -73,17 +42,41 @@ const RecentAudits: React.FC = () => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 4.5) return 'text-green-600 font-semibold';
-    if (score >= 4.0) return 'text-blue-600 font-semibold';
-    if (score >= 3.5) return 'text-yellow-600 font-semibold';
+    if (score >= 80) return 'text-green-600 font-semibold';
+    if (score >= 60) return 'text-yellow-600 font-semibold';
     if (score > 0) return 'text-red-600 font-semibold';
     return 'text-gray-400';
   };
 
+  if (recentAudits.length === 0) {
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base md:text-lg">Auditorias Recentes</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <p className="text-gray-500 mb-4">Nenhuma auditoria encontrada</p>
+            <Link to="/audit/new">
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                Criar Primeira Auditoria
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 flex flex-row items-center justify-between">
         <CardTitle className="text-base md:text-lg">Auditorias Recentes</CardTitle>
+        <Link to="/audits">
+          <Button variant="outline" size="sm">
+            Ver Todas
+          </Button>
+        </Link>
       </CardHeader>
       <CardContent>
         <div className="space-y-3 md:space-y-4">
@@ -97,9 +90,9 @@ const RecentAudits: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium text-gray-900 text-sm md:text-base truncate">{audit.title}</h4>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 text-xs md:text-sm text-gray-600 mt-1 space-y-1 sm:space-y-0">
-                    <span>Área: {audit.area}</span>
+                    <span>Área: {audit.area.charAt(0).toUpperCase() + audit.area.slice(1)}</span>
                     <span className="hidden sm:inline">•</span>
-                    <span>Por: {audit.auditor}</span>
+                    <span>Por: {audit.auditorName}</span>
                     <span className="hidden sm:inline">•</span>
                     <span>{new Date(audit.date).toLocaleDateString('pt-BR')}</span>
                   </div>
@@ -107,8 +100,8 @@ const RecentAudits: React.FC = () => {
               </div>
               <div className="flex items-center justify-between sm:justify-end sm:space-x-4">
                 <div className="flex items-center space-x-2">
-                  <div className={`text-base md:text-lg ${getScoreColor(audit.score)}`}>
-                    {audit.score > 0 ? `${audit.score}/5.0` : '--'}
+                  <div className={`text-base md:text-lg ${getScoreColor(audit.percentageScore)}`}>
+                    {audit.percentageScore > 0 ? `${audit.percentageScore.toFixed(1)}%` : '--'}
                   </div>
                   {getStatusBadge(audit.status)}
                 </div>

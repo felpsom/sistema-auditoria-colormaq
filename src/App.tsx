@@ -9,6 +9,7 @@ import { AuditProvider } from "@/contexts/AuditContext";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import AuditPage from "./pages/AuditPage";
+import AuditListPage from "./pages/AuditListPage";
 import UserSettingsPage from "./pages/UserSettingsPage";
 import SystemSettingsPage from "./pages/SystemSettingsPage";
 import NotFound from "./pages/NotFound";
@@ -52,7 +53,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/audit/new" element={<AuditPage />} />
-              <Route path="/audits" element={<div>Lista de Auditorias em desenvolvimento</div>} />
+              <Route path="/audits" element={<AuditListPage />} />
               <Route path="/reports" element={<div>Relatórios em desenvolvimento</div>} />
               <Route path="/users" element={<div>Usuários em desenvolvimento</div>} />
               <Route path="/settings" element={<UserSettingsPage />} />
