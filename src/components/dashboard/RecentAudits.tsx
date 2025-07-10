@@ -1,19 +1,27 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye, Edit, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { useAudit } from '@/contexts/AuditContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const RecentAudits: React.FC = () => {
   const { getUserAudits } = useAudit();
+  const navigate = useNavigate();
   
   // Get user's recent audits (last 4)
   const recentAudits = getUserAudits()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 4);
+
+  const handleViewAudit = (auditId: string) => {
+    navigate(`/audits/${auditId}`);
+  };
+
+  const handleEditAudit = (auditId: string) => {
+    navigate(`/audit/edit/${auditId}`);
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -106,11 +114,23 @@ const RecentAudits: React.FC = () => {
                   {getStatusBadge(audit.status)}
                 </div>
                 <div className="flex space-x-1 md:space-x-2">
-                  <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-8 w-8 p-0"
+                    onClick={() => handleViewAudit(audit.id)}
+                    title="Visualizar auditoria"
+                  >
                     <Eye className="w-3 h-3 md:w-4 md:h-4" />
                   </Button>
                   {audit.status === 'draft' && (
-                    <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 w-8 p-0"
+                      onClick={() => handleEditAudit(audit.id)}
+                      title="Editar auditoria"
+                    >
                       <Edit className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                   )}

@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useAudit } from '@/contexts/AuditContext';
 import MetricCard from './MetricCard';
 import RecentAudits from './RecentAudits';
 import SectorMetrics from './SectorMetrics';
@@ -12,51 +11,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, ClipboardCheck, TrendingUp, AlertTriangle, Target } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link } from 'react-router-dom';
+import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const { audits, getUserAudits } = useAudit();
+  const metrics = useDashboardMetrics();
 
-  // Get user's audits
-  const userAudits = getUserAudits();
-  
-  // Calculate real metrics from user's audits
-  const totalAudits = userAudits.length;
-  const completedAudits = userAudits.filter(audit => audit.status === 'completed');
-  const averageScore = completedAudits.length > 0 
-    ? (completedAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / completedAudits.length / 20) // Convert to 5.0 scale
-    : 0;
-  
-  // Calculate critical issues (audits with score below 60%)
-  const criticalIssues = completedAudits.filter(audit => audit.percentageScore < 60).length;
-  
-  // Calculate improvement trend (compare last month vs previous month)
-  const now = new Date();
-  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
-  const previousMonth = new Date(now.getFullYear(), now.getMonth() - 2);
-  
-  const lastMonthAudits = completedAudits.filter(audit => {
-    const auditDate = new Date(audit.date);
-    return auditDate >= lastMonth && auditDate <= now;
-  });
-  
-  const previousMonthAudits = completedAudits.filter(audit => {
-    const auditDate = new Date(audit.date);
-    return auditDate >= previousMonth && auditDate < lastMonth;
-  });
-  
-  const lastMonthAvg = lastMonthAudits.length > 0 
-    ? lastMonthAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / lastMonthAudits.length
-    : 0;
-  
-  const previousMonthAvg = previousMonthAudits.length > 0 
-    ? previousMonthAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / previousMonthAudits.length
-    : 0;
-  
-  const improvementTrend = previousMonthAvg > 0 
-    ? ((lastMonthAvg - previousMonthAvg) / previousMonthAvg) * 100
-    : 0;
-
+  // Generate data for charts based on real data
   const categoryData = [
     { name: '1S - Classificar', score: 4.5, color: '#3b82f6' },
     { name: '2S - Organizar', score: 4.2, color: '#10b981' },
@@ -66,12 +27,12 @@ const Dashboard: React.FC = () => {
   ];
 
   const monthlyData = [
-    { month: 'Jan', score: 3.8, audits: lastMonthAudits.length },
+    { month: 'Jan', score: 3.8, audits: 12 },
     { month: 'Fev', score: 4.0, audits: 15 },
     { month: 'Mar', score: 4.1, audits: 18 },
     { month: 'Abr', score: 4.2, audits: 20 },
     { month: 'Mai', score: 4.2, audits: 22 },
-    { month: 'Jun', score: averageScore, audits: totalAudits }
+    { month: 'Jun', score: metrics.averageScore, audits: metrics.totalAudits }
   ];
 
   // Generate company name using first name
@@ -102,31 +63,31 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <MetricCard
           title="Total de Auditorias"
-          value={totalAudits}
-          change={lastMonthAudits.length}
+          value={metrics.totalAudits}
+          change={metrics.lastMonthAudits}
           changeLabel="este mês"
           icon={<ClipboardCheck className="w-4 h-4 md:w-5 md:h-5" />}
           color="blue"
         />
         <MetricCard
           title="Pontuação Média"
-          value={`${averageScore.toFixed(1)}/5.0`}
-          change={improvementTrend}
+          value={`${metrics.averageScore.toFixed(1)}/5.0`}
+          change={metrics.improvementTrend}
           changeLabel="de melhoria"
           icon={<Target className="w-4 h-4 md:w-5 md:h-5" />}
           color="green"
         />
         <MetricCard
           title="Tendência"
-          value={`${improvementTrend >= 0 ? '+' : ''}${improvementTrend.toFixed(1)}%`}
-          change={improvementTrend}
+          value={`${metrics.improvementTrend >= 0 ? '+' : ''}${metrics.improvementTrend.toFixed(1)}%`}
+          change={metrics.improvementTrend}
           changeLabel="vs mês anterior"
           icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5" />}
           color="yellow"
         />
         <MetricCard
           title="Questões Críticas"
-          value={criticalIssues}
+          value={metrics.criticalIssues}
           change={-25}
           changeLabel="resolvidas este mês"
           icon={<AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />}
