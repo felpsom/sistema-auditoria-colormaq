@@ -9,7 +9,8 @@ interface MetricCardProps {
   change?: number;
   changeLabel?: string;
   icon: React.ReactNode;
-  color?: 'blue' | 'green' | 'yellow' | 'red';
+  color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple';
+  description?: string;
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
@@ -18,44 +19,61 @@ const MetricCard: React.FC<MetricCardProps> = ({
   change,
   changeLabel,
   icon,
-  color = 'blue'
+  color = 'blue',
+  description
 }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-200',
-    green: 'bg-green-50 text-green-600 border-green-200',
-    yellow: 'bg-yellow-50 text-yellow-600 border-yellow-200',
-    red: 'bg-red-50 text-red-600 border-red-200'
+    blue: 'bg-blue-500 text-white',
+    green: 'bg-green-500 text-white',
+    yellow: 'bg-yellow-500 text-white',
+    red: 'bg-red-500 text-white',
+    purple: 'bg-purple-500 text-white'
+  };
+
+  const bgColorClasses = {
+    blue: 'bg-blue-50 border-blue-200',
+    green: 'bg-green-50 border-green-200',
+    yellow: 'bg-yellow-50 border-yellow-200',
+    red: 'bg-red-50 border-red-200',
+    purple: 'bg-purple-50 border-purple-200'
   };
 
   const getTrendIcon = () => {
     if (change === undefined) return null;
-    if (change > 0) return <TrendingUp className="w-4 h-4 text-green-500" />;
-    if (change < 0) return <TrendingDown className="w-4 h-4 text-red-500" />;
+    if (change > 0) return <TrendingUp className="w-4 h-4 text-green-600" />;
+    if (change < 0) return <TrendingDown className="w-4 h-4 text-red-600" />;
     return <Minus className="w-4 h-4 text-gray-500" />;
   };
 
   const getTrendColor = () => {
     if (change === undefined) return '';
-    if (change > 0) return 'text-green-600';
-    if (change < 0) return 'text-red-600';
-    return 'text-gray-600';
+    if (change > 0) return 'text-green-600 bg-green-50';
+    if (change < 0) return 'text-red-600 bg-red-50';
+    return 'text-gray-600 bg-gray-50';
   };
 
   return (
-    <Card className="metric-card hover:scale-105 transition-transform duration-200">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-gray-600">{title}</CardTitle>
-        <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
-          {icon}
+    <Card className={`transition-all duration-200 hover:shadow-md ${bgColorClasses[color]} border-2`}>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <div className={`p-3 rounded-full ${colorClasses[color]}`}>
+            {icon}
+          </div>
+          <div className="text-right">
+            <CardTitle className="text-2xl font-bold text-gray-900">{value}</CardTitle>
+            <p className="text-sm font-medium text-gray-600">{title}</p>
+          </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
+      <CardContent className="pt-0">
+        {description && (
+          <p className="text-xs text-gray-500 mb-2">{description}</p>
+        )}
         {change !== undefined && (
-          <div className={`flex items-center text-sm ${getTrendColor()}`}>
+          <div className={`flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium ${getTrendColor()}`}>
             {getTrendIcon()}
             <span className="ml-1">
-              {Math.abs(change)}% {changeLabel || 'vs período anterior'}
+              {change > 0 ? '+' : ''}{change.toFixed(1)}% {changeLabel}
             </span>
           </div>
         )}

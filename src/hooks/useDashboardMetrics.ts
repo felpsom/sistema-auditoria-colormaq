@@ -10,11 +10,16 @@ export const useDashboardMetrics = () => {
     const totalAudits = userAudits.length;
     const completedAudits = userAudits.filter(audit => audit.status === 'completed');
     
+    // Calculate average score (0-100 scale)
     const averageScore = completedAudits.length > 0 
-      ? (completedAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / completedAudits.length / 20)
+      ? (completedAudits.reduce((sum, audit) => sum + audit.percentageScore, 0) / completedAudits.length)
       : 0;
     
+    // Critical issues (audits with score below 60%)
     const criticalIssues = completedAudits.filter(audit => audit.percentageScore < 60).length;
+    
+    // Excellent audits (score above 80%)
+    const excellentAudits = completedAudits.filter(audit => audit.percentageScore >= 80).length;
     
     // Calculate improvement trend
     const now = new Date();
@@ -43,13 +48,20 @@ export const useDashboardMetrics = () => {
       ? ((lastMonthAvg - previousMonthAvg) / previousMonthAvg) * 100
       : 0;
 
+    // Compliance rate (audits with score >= 70%)
+    const complianceRate = completedAudits.length > 0 
+      ? (completedAudits.filter(audit => audit.percentageScore >= 70).length / completedAudits.length) * 100
+      : 0;
+
     return {
       totalAudits,
       completedAudits,
       averageScore,
       criticalIssues,
+      excellentAudits,
       improvementTrend,
       lastMonthAudits: lastMonthAudits.length,
+      complianceRate,
       userAudits
     };
   }, [getUserAudits]);
