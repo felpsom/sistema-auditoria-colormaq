@@ -5,35 +5,21 @@ import MetricCard from './MetricCard';
 import RecentAudits from './RecentAudits';
 import SectorMetrics from './SectorMetrics';
 import AreaMetrics from './AreaMetrics';
+import RankingSetorial from './RankingSetorial';
+import EvolutionChart from './EvolutionChart';
+import AreaDestaque from './AreaDestaque';
+import RadarChart5S from './RadarChart5S';
+import ComponentMetrics from './ComponentMetrics';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, ClipboardCheck, TrendingUp, AlertTriangle, Target } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Plus, ClipboardCheck, TrendingUp, AlertTriangle, Target, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const metrics = useDashboardMetrics();
-
-  // Generate data for charts based on real data
-  const categoryData = [
-    { name: '1S - Classificar', score: 4.5, color: '#3b82f6' },
-    { name: '2S - Organizar', score: 4.2, color: '#10b981' },
-    { name: '3S - Limpar', score: 4.0, color: '#f59e0b' },
-    { name: '4S - Padronizar', score: 3.8, color: '#ef4444' },
-    { name: '5S - Disciplina', score: 4.1, color: '#8b5cf6' }
-  ];
-
-  const monthlyData = [
-    { month: 'Jan', score: 3.8, audits: 12 },
-    { month: 'Fev', score: 4.0, audits: 15 },
-    { month: 'Mar', score: 4.1, audits: 18 },
-    { month: 'Abr', score: 4.2, audits: 20 },
-    { month: 'Mai', score: 4.2, audits: 22 },
-    { month: 'Jun', score: metrics.averageScore, audits: metrics.totalAudits }
-  ];
 
   // Generate company name using first name
   const firstName = user?.name.split(' ')[0] || 'Usuário';
@@ -44,10 +30,11 @@ const Dashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">Dashboard {companyName}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">
+            AUDITORIA 5S | WK{new Date().getWeek()}
+          </h1>
           <p className="text-gray-600 mt-1 text-sm md:text-base truncate">
-            Bem-vindo, {user?.name}
-            <span className="hidden sm:inline"> - {companyName}</span>
+            {companyName} - Semana {new Date().getWeek()}/{new Date().getFullYear()}
           </p>
         </div>
         <Link to="/audit/new">
@@ -59,8 +46,8 @@ const Dashboard: React.FC = () => {
         </Link>
       </div>
 
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+      {/* Main Metrics Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6">
         <MetricCard
           title="Total de Auditorias"
           value={metrics.totalAudits}
@@ -93,11 +80,32 @@ const Dashboard: React.FC = () => {
           icon={<AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />}
           color="red"
         />
+        <MetricCard
+          title="Ranking Geral"
+          value="#1"
+          change={0}
+          changeLabel="posição mantida"
+          icon={<Trophy className="w-4 h-4 md:w-5 md:h-5" />}
+          color="yellow"
+        />
+      </div>
+
+      {/* First Row - Ranking, Evolution, Area Destaque */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <RankingSetorial />
+        <EvolutionChart />
+        <AreaDestaque />
+      </div>
+
+      {/* Second Row - Component Metrics and 5S Radars */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
+        <ComponentMetrics />
+        <RadarChart5S />
       </div>
 
       {/* Tabs para diferentes visualizações */}
       <Tabs defaultValue="overview" className="space-y-4 md:space-y-6">
-        <TabsList className="grid w-full grid-cols-3 h-auto">
+        <TabsList className="grid w-full grid-cols-4 h-auto">
           <TabsTrigger value="overview" className="text-xs md:text-sm px-2 py-2">
             <span className="hidden sm:inline">Visão Geral</span>
             <span className="sm:hidden">Geral</span>
@@ -110,54 +118,17 @@ const Dashboard: React.FC = () => {
             <span className="hidden sm:inline">Por Área</span>
             <span className="sm:hidden">Áreas</span>
           </TabsTrigger>
+          <TabsTrigger value="recent" className="text-xs md:text-sm px-2 py-2">
+            <span className="hidden sm:inline">Recentes</span>
+            <span className="sm:hidden">Recentes</span>
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4 md:space-y-6">
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
-            {/* Monthly Performance */}
-            <Card className="w-full">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base md:text-lg">Performance Mensal</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="w-full h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                      <YAxis domain={[0, 5]} tick={{ fontSize: 12 }} />
-                      <Tooltip />
-                      <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 5S Categories Performance */}
-            <Card className="w-full">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base md:text-lg">Performance por Categoria 5S</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="w-full h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={categoryData} layout="horizontal">
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" domain={[0, 5]} tick={{ fontSize: 12 }} />
-                      <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 10 }} />
-                      <Tooltip />
-                      <Bar dataKey="score" fill="#10b981" radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+        <TabsContent value="overview">
+          {/* Overview content is already shown above */}
+          <div className="text-center text-gray-500 py-8">
+            <p>Visão geral exibida acima - selecione outras abas para mais detalhes</p>
           </div>
-
-          {/* Recent Audits */}
-          <RecentAudits />
         </TabsContent>
 
         <TabsContent value="sectors">
@@ -167,9 +138,28 @@ const Dashboard: React.FC = () => {
         <TabsContent value="areas">
           <AreaMetrics />
         </TabsContent>
+
+        <TabsContent value="recent">
+          <RecentAudits />
+        </TabsContent>
       </Tabs>
     </div>
   );
+};
+
+// Helper to add week number to Date prototype
+declare global {
+  interface Date {
+    getWeek(): number;
+  }
+}
+
+Date.prototype.getWeek = function() {
+  const date = new Date(this.getTime());
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  const week1 = new Date(date.getFullYear(), 0, 4);
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 };
 
 export default Dashboard;
