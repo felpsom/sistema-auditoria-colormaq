@@ -22,4 +22,14 @@ export interface AuthContextType {
   register: (userData: RegisterData) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading?: boolean;
+}
+
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormData extends RegisterData {
+  confirmPassword: string;
 }
