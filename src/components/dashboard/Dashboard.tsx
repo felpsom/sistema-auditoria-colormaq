@@ -2,24 +2,15 @@
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import MetricCard from './MetricCard';
-import RecentAudits from './RecentAudits';
-import SectorMetrics from './SectorMetrics';
-import AreaMetrics from './AreaMetrics';
-import RankingSetorial from './RankingSetorial';
-import EvolutionChart from './EvolutionChart';
-import AreaDestaque from './AreaDestaque';
-import RadarChart5S from './RadarChart5S';
-import ComponentMetrics from './ComponentMetrics';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import DashboardFilters from './DashboardFilters';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, ClipboardCheck, Target, TrendingUp, AlertTriangle, CheckCircle, BarChart3, User } from 'lucide-react';
+import { Plus, ClipboardCheck, Target, TrendingUp, AlertTriangle, CheckCircle, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
+import { useFilteredMetrics } from '@/hooks/useFilteredMetrics';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const metrics = useDashboardMetrics();
+  const { metrics, filters } = useFilteredMetrics();
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 p-4">
@@ -50,11 +41,21 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Key Performance Indicators */}
+      {/* Filtros */}
+      <DashboardFilters
+        selectedSetor={filters.selectedSetor}
+        selectedArea={filters.selectedArea}
+        selectedSenso={filters.selectedSenso}
+        onSetorChange={filters.setSelectedSetor}
+        onAreaChange={filters.setSelectedArea}
+        onSensoChange={filters.setSelectedSenso}
+      />
+
+      {/* Indicadores Principais */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <MetricCard
           title="Total de Auditorias"
-          value={metrics.totalAudits}
+          value={metrics.filteredAudits}
           change={metrics.lastMonthAudits > 0 ? 12.5 : 0}
           changeLabel="este mês"
           icon={<ClipboardCheck className="w-6 h-6" />}
@@ -87,7 +88,7 @@ const Dashboard: React.FC = () => {
           value={metrics.excellentAudits}
           change={15.8}
           changeLabel="este mês"
-          icon={<BarChart3 className="w-6 h-6" />}
+          icon={<TrendingUp className="w-6 h-6" />}
           color="yellow"
           description="≥80% de pontuação"
         />
@@ -113,118 +114,78 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      {/* Charts and Analysis Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-1">
-          <RankingSetorial />
-        </div>
-        <div className="xl:col-span-1">
-          <EvolutionChart />
-        </div>
-        <div className="xl:col-span-1">
-          <AreaDestaque />
-        </div>
+      {/* Indicadores por Senso */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <MetricCard
+          title="1º Senso - Seiri"
+          value={`${metrics.sensoMetrics.seiri.toFixed(1)}%`}
+          change={2.5}
+          changeLabel="vs anterior"
+          icon={<div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>}
+          color="red"
+          description="Organização"
+        />
+        
+        <MetricCard
+          title="2º Senso - Seiton"
+          value={`${metrics.sensoMetrics.seiton.toFixed(1)}%`}
+          change={1.8}
+          changeLabel="vs anterior"
+          icon={<div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>}
+          color="yellow"
+          description="Ordem"
+        />
+        
+        <MetricCard
+          title="3º Senso - Seiso"
+          value={`${metrics.sensoMetrics.seiso.toFixed(1)}%`}
+          change={3.2}
+          changeLabel="vs anterior"
+          icon={<div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</div>}
+          color="blue"
+          description="Limpeza"
+        />
+        
+        <MetricCard
+          title="4º Senso - Seiketsu"
+          value={`${metrics.sensoMetrics.seiketsu.toFixed(1)}%`}
+          change={1.5}
+          changeLabel="vs anterior"
+          icon={<div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">4</div>}
+          color="green"
+          description="Padronização"
+        />
+        
+        <MetricCard
+          title="5º Senso - Shitsuke"
+          value={`${metrics.sensoMetrics.shitsuke.toFixed(1)}%`}
+          change={2.1}
+          changeLabel="vs anterior"
+          icon={<div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">5</div>}
+          color="purple"
+          description="Disciplina"
+        />
       </div>
 
-      {/* Secondary Analysis */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <ComponentMetrics />
-        <RadarChart5S />
-      </div>
-
-      {/* Detailed Analysis Tabs */}
-      <Card className="shadow-lg border-2">
-        <CardHeader className="bg-gray-50 rounded-t-lg">
-          <CardTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-blue-600" />
-            Análise Detalhada por Categoria
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-lg h-12">
-              <TabsTrigger 
-                value="overview" 
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium py-2"
-              >
-                Resumo Executivo
-              </TabsTrigger>
-              <TabsTrigger 
-                value="sectors" 
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium py-2"
-              >
-                Análise por Setor
-              </TabsTrigger>
-              <TabsTrigger 
-                value="areas" 
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium py-2"
-              >
-                Performance por Área
-              </TabsTrigger>
-              <TabsTrigger 
-                value="recent" 
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium py-2"
-              >
-                Auditorias Recentes
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="overview" className="space-y-4">
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                  <div>
-                    <h3 className="text-2xl font-bold text-blue-800 mb-1">
-                      {metrics.averageScore.toFixed(1)}%
-                    </h3>
-                    <p className="text-blue-600 font-medium">Pontuação Média Geral</p>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-green-800 mb-1">
-                      {metrics.complianceRate.toFixed(1)}%
-                    </h3>
-                    <p className="text-green-600 font-medium">Taxa de Conformidade</p>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-purple-800 mb-1">
-                      {metrics.excellentAudits}
-                    </h3>
-                    <p className="text-purple-600 font-medium">Auditorias Excelentes</p>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="sectors">
-              <SectorMetrics />
-            </TabsContent>
-
-            <TabsContent value="areas">
-              <AreaMetrics />
-            </TabsContent>
-
-            <TabsContent value="recent">
-              <RecentAudits />
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+      {/* Informações dos Filtros Aplicados */}
+      {(filters.selectedSetor !== 'Todos' || filters.selectedArea !== 'Todas' || filters.selectedSenso !== 'Todos os Sensos') && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="font-medium text-blue-800 mb-2">Filtros Aplicados:</h3>
+          <div className="flex flex-wrap gap-2 text-sm text-blue-700">
+            {filters.selectedSetor !== 'Todos' && (
+              <span className="bg-blue-100 px-2 py-1 rounded">Setor: {filters.selectedSetor}</span>
+            )}
+            {filters.selectedArea !== 'Todas' && (
+              <span className="bg-blue-100 px-2 py-1 rounded">Área: {filters.selectedArea}</span>
+            )}
+            {filters.selectedSenso !== 'Todos os Sensos' && (
+              <span className="bg-blue-100 px-2 py-1 rounded">Senso: {filters.selectedSenso}</span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-// Helper to add week number to Date prototype
-declare global {
-  interface Date {
-    getWeek(): number;
-  }
-}
-
-Date.prototype.getWeek = function() {
-  const date = new Date(this.getTime());
-  date.setHours(0, 0, 0, 0);
-  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-  const week1 = new Date(date.getFullYear(), 0, 4);
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 };
 
 export default Dashboard;
