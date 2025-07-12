@@ -13,7 +13,7 @@ import ComponentMetrics from './ComponentMetrics';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, ClipboardCheck, TrendingUp, AlertTriangle, Target, Trophy } from 'lucide-react';
+import { Plus, ClipboardCheck, TrendingUp, AlertTriangle, Target, Trophy, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 
@@ -21,39 +21,43 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const metrics = useDashboardMetrics();
 
-  // Generate company name using first name
-  const firstName = user?.name.split(' ')[0] || 'Usuário';
-  const companyName = user?.company || `${firstName} Industrial`;
-
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-4 md:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">
-            AUDITORIA 5S | WK{new Date().getWeek()}
-          </h1>
-          <p className="text-gray-600 mt-1 text-sm md:text-base truncate">
-            {companyName} - Semana {new Date().getWeek()}/{new Date().getFullYear()}
-          </p>
+    <div className="w-full max-w-7xl mx-auto space-y-6">
+      {/* Enhanced Header Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-6 text-white shadow-lg">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
+          <div className="flex-1">
+            <h1 className="text-3xl lg:text-4xl font-bold mb-2">
+              SISTEMA DE AUDITORIA 5S | {user?.company || 'COLORMAQ'}
+            </h1>
+            <div className="flex items-center space-x-4 text-blue-100">
+              <div className="flex items-center space-x-2">
+                <User className="w-4 h-4" />
+                <span className="font-medium">{user?.name}</span>
+              </div>
+              <div className="hidden sm:block w-px h-4 bg-blue-300"></div>
+              <span className="text-sm">{user?.role === 'admin' ? 'Administrador' : 'Auditor'}</span>
+              <div className="hidden sm:block w-px h-4 bg-blue-300"></div>
+              <span className="text-sm">Semana {new Date().getWeek()}/{new Date().getFullYear()}</span>
+            </div>
+          </div>
+          <Link to="/audit/new">
+            <Button className="bg-white text-blue-600 hover:bg-blue-50 shadow-md">
+              <Plus className="w-4 h-4 mr-2" />
+              Nova Auditoria
+            </Button>
+          </Link>
         </div>
-        <Link to="/audit/new">
-          <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto flex-shrink-0">
-            <Plus className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Nova Auditoria</span>
-            <span className="sm:hidden">Nova</span>
-          </Button>
-        </Link>
       </div>
 
-      {/* Main Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6">
+      {/* Main Metrics Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <MetricCard
           title="Total de Auditorias"
           value={metrics.totalAudits}
           change={metrics.lastMonthAudits}
           changeLabel="este mês"
-          icon={<ClipboardCheck className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={<ClipboardCheck className="w-5 h-5" />}
           color="blue"
         />
         <MetricCard
@@ -61,7 +65,7 @@ const Dashboard: React.FC = () => {
           value={`${metrics.averageScore.toFixed(1)}/5.0`}
           change={metrics.improvementTrend}
           changeLabel="de melhoria"
-          icon={<Target className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={<Target className="w-5 h-5" />}
           color="green"
         />
         <MetricCard
@@ -69,7 +73,7 @@ const Dashboard: React.FC = () => {
           value={`${metrics.improvementTrend >= 0 ? '+' : ''}${metrics.improvementTrend.toFixed(1)}%`}
           change={metrics.improvementTrend}
           changeLabel="vs mês anterior"
-          icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={<TrendingUp className="w-5 h-5" />}
           color="yellow"
         />
         <MetricCard
@@ -77,7 +81,7 @@ const Dashboard: React.FC = () => {
           value={metrics.criticalIssues}
           change={-25}
           changeLabel="resolvidas este mês"
-          icon={<AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={<AlertTriangle className="w-5 h-5" />}
           color="red"
         />
         <MetricCard
@@ -85,64 +89,97 @@ const Dashboard: React.FC = () => {
           value="#1"
           change={0}
           changeLabel="posição mantida"
-          icon={<Trophy className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={<Trophy className="w-5 h-5" />}
           color="yellow"
         />
       </div>
 
-      {/* First Row - Ranking, Evolution, Area Destaque */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-        <RankingSetorial />
-        <EvolutionChart />
-        <AreaDestaque />
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Left Column - Ranking and Evolution */}
+        <div className="xl:col-span-1 space-y-6">
+          <RankingSetorial />
+        </div>
+
+        {/* Middle Column - Evolution Chart */}
+        <div className="xl:col-span-1">
+          <EvolutionChart />
+        </div>
+
+        {/* Right Column - Area Destaque */}
+        <div className="xl:col-span-1">
+          <AreaDestaque />
+        </div>
       </div>
 
-      {/* Second Row - Component Metrics and 5S Radars */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
+      {/* Second Row - Component Metrics and 5S Analysis */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <ComponentMetrics />
         <RadarChart5S />
       </div>
 
-      {/* Tabs para diferentes visualizações */}
-      <Tabs defaultValue="overview" className="space-y-4 md:space-y-6">
-        <TabsList className="grid w-full grid-cols-4 h-auto">
-          <TabsTrigger value="overview" className="text-xs md:text-sm px-2 py-2">
-            <span className="hidden sm:inline">Visão Geral</span>
-            <span className="sm:hidden">Geral</span>
-          </TabsTrigger>
-          <TabsTrigger value="sectors" className="text-xs md:text-sm px-2 py-2">
-            <span className="hidden sm:inline">Por Setor</span>
-            <span className="sm:hidden">Setores</span>
-          </TabsTrigger>
-          <TabsTrigger value="areas" className="text-xs md:text-sm px-2 py-2">
-            <span className="hidden sm:inline">Por Área</span>
-            <span className="sm:hidden">Áreas</span>
-          </TabsTrigger>
-          <TabsTrigger value="recent" className="text-xs md:text-sm px-2 py-2">
-            <span className="hidden sm:inline">Recentes</span>
-            <span className="sm:hidden">Recentes</span>
-          </TabsTrigger>
-        </TabsList>
+      {/* Detailed Analysis Tabs */}
+      <Card className="shadow-lg">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl font-semibold text-gray-800">
+            Análise Detalhada
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-lg">
+              <TabsTrigger 
+                value="overview" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
+              >
+                Visão Geral
+              </TabsTrigger>
+              <TabsTrigger 
+                value="sectors" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
+              >
+                Por Setor
+              </TabsTrigger>
+              <TabsTrigger 
+                value="areas" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
+              >
+                Por Área
+              </TabsTrigger>
+              <TabsTrigger 
+                value="recent" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
+              >
+                Recentes
+              </TabsTrigger>
+            </TabsList>
 
-        <TabsContent value="overview">
-          {/* Overview content is already shown above */}
-          <div className="text-center text-gray-500 py-8">
-            <p>Visão geral exibida acima - selecione outras abas para mais detalhes</p>
-          </div>
-        </TabsContent>
+            <TabsContent value="overview" className="space-y-4">
+              <div className="bg-blue-50 rounded-lg p-6 text-center">
+                <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                  Resumo Executivo
+                </h3>
+                <p className="text-blue-600">
+                  Dados consolidados apresentados nos gráficos acima. 
+                  Use as abas para análises específicas por setor, área ou histórico.
+                </p>
+              </div>
+            </TabsContent>
 
-        <TabsContent value="sectors">
-          <SectorMetrics />
-        </TabsContent>
+            <TabsContent value="sectors">
+              <SectorMetrics />
+            </TabsContent>
 
-        <TabsContent value="areas">
-          <AreaMetrics />
-        </TabsContent>
+            <TabsContent value="areas">
+              <AreaMetrics />
+            </TabsContent>
 
-        <TabsContent value="recent">
-          <RecentAudits />
-        </TabsContent>
-      </Tabs>
+            <TabsContent value="recent">
+              <RecentAudits />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 };
