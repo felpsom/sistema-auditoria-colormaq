@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
       />
 
       {/* Indicadores Principais */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total de Auditorias"
           value={metrics.filteredAudits}
@@ -60,17 +60,17 @@ const Dashboard: React.FC = () => {
           changeLabel="este mês"
           icon={<ClipboardCheck className="w-6 h-6" />}
           color="blue"
-          description="Auditorias realizadas"
+          description="Auditorias realizadas no período"
         />
         
         <MetricCard
-          title="Pontuação Média"
+          title="Pontuação Média Geral"
           value={`${metrics.averageScore.toFixed(1)}%`}
           change={metrics.improvementTrend}
-          changeLabel="vs mês anterior"
+          changeLabel="vs período anterior"
           icon={<Target className="w-6 h-6" />}
           color="green"
-          description="Performance geral"
+          description="Performance média dos 5 sensos"
         />
         
         <MetricCard
@@ -80,37 +80,17 @@ const Dashboard: React.FC = () => {
           changeLabel="de melhoria"
           icon={<CheckCircle className="w-6 h-6" />}
           color="purple"
-          description="≥70% de pontuação"
-        />
-        
-        <MetricCard
-          title="Auditorias Excelentes"
-          value={metrics.excellentAudits}
-          change={15.8}
-          changeLabel="este mês"
-          icon={<TrendingUp className="w-6 h-6" />}
-          color="yellow"
-          description="≥80% de pontuação"
+          description="Auditorias com ≥70% de pontuação"
         />
         
         <MetricCard
           title="Questões Críticas"
           value={metrics.criticalIssues}
           change={-25}
-          changeLabel="resolvidas"
+          changeLabel="vs anterior"
           icon={<AlertTriangle className="w-6 h-6" />}
           color="red"
-          description="<60% de pontuação"
-        />
-        
-        <MetricCard
-          title="Tendência Geral"
-          value={`${metrics.improvementTrend >= 0 ? '+' : ''}${metrics.improvementTrend.toFixed(1)}%`}
-          change={metrics.improvementTrend}
-          changeLabel="evolução"
-          icon={<TrendingUp className="w-6 h-6" />}
-          color="blue"
-          description="Melhoria contínua"
+          description="Auditorias com <60% de pontuação"
         />
       </div>
 
