@@ -13,6 +13,7 @@ import AuditListPage from "./pages/AuditListPage";
 import UserSettingsPage from "./pages/UserSettingsPage";
 import SystemSettingsPage from "./pages/SystemSettingsPage";
 import NotFound from "./pages/NotFound";
+import UsersPage from "./pages/UsersPage";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import { Loader2 } from "lucide-react";
@@ -69,7 +70,7 @@ const App = () => (
               <Route path="/audit/new" element={<AuditPage />} />
               <Route path="/audits" element={<AuditListPage />} />
               <Route path="/reports" element={<div>Relatórios em desenvolvimento</div>} />
-              <Route path="/users" element={<div>Usuários em desenvolvimento</div>} />
+              <Route path="/users" element={<UsersPage />} />
               <Route path="/settings" element={<UserSettingsPage />} />
               <Route path="/settings/system" element={<SystemSettingsPage />} />
               <Route path="*" element={<NotFound />} />
