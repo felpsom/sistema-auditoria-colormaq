@@ -30,12 +30,14 @@ const Navbar: React.FC = () => {
           </Sheet>
 
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <span className="text-white text-xs md:text-sm font-bold">CM</span>
-            </div>
+            <img 
+              src="/lovable-uploads/55fae53a-7004-4b8f-b185-28d17ac38e42.png" 
+              alt="Logo" 
+              className="w-6 h-6 md:w-8 md:h-8 rounded-lg"
+            />
             <h1 className="text-sm md:text-xl text-white font-bold truncate max-w-48 md:max-w-none">
-              <span className="hidden sm:inline">Sistema Colormaq de Produção</span>
-              <span className="sm:hidden">Colormaq</span>
+              <span className="hidden sm:inline">Facilitando sua vida</span>
+              <span className="sm:hidden">Facilitando</span>
             </h1>
           </div>
         </div>
