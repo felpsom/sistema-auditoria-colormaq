@@ -5,6 +5,7 @@
 
 @layer base {
   :root {
+    --navbar-bg: 240 100% 25%;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
