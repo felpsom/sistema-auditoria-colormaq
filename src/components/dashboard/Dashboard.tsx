@@ -19,9 +19,16 @@ const Dashboard: React.FC = () => {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white shadow-lg">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
           <div className="flex-1">
-            <h1 className="text-2xl lg:text-3xl font-bold mb-2">
-              DASHBOARD AÇÕES | {user?.company || 'COLORMAQ'}
-            </h1>
+            <div className="flex items-center space-x-4 mb-2">
+              <img 
+                src="/lovable-uploads/55fae53a-7004-4b8f-b185-28d17ac38e42.png" 
+                alt="Logo" 
+                className="w-12 h-12 rounded-full bg-white p-1"
+              />
+              <h1 className="text-2xl lg:text-3xl font-bold">
+                FACILITANDO SUA VIDA | {user?.company || 'COLORMAQ'}
+              </h1>
+            </div>
             <div className="flex items-center space-x-4 text-blue-100">
               <div className="flex items-center space-x-2">
                 <User className="w-4 h-4" />
